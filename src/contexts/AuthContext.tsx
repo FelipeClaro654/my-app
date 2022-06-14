@@ -1,7 +1,7 @@
 import Router from 'next/router'
 import { createContext, useState } from 'react'
 import { api } from 'services/auth'
-
+import { setCookie } from 'nookies'
 type User = {
   email: string
   permissions: string[]
@@ -35,13 +35,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function signIn({ email, password }: SignInCredentials) {
     try {
       const {
-        data: { permissions, roles },
+        data: { permissions, roles, token, refreshToken },
       } = await api.post('sessions', {
         email,
         password,
       })
 
       setUser({ email, permissions, roles })
+      setCookie(undefined, 'nextauth.token', token, {
+        maxAge: 60 * 60 * 24 * 30,
+        path: '/',
+      })
+      setCookie(undefined, 'nextauth.refreshtoken', refreshToken, {
+        maxAge: 60 * 60 * 24 * 30,
+        path: '/',
+      })
       Router.push('/todolist')
     } catch (err) {
       console.log(err)
