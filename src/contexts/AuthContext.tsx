@@ -1,7 +1,8 @@
 import Router from 'next/router'
 import { createContext, useState } from 'react'
-import { api } from 'services/auth'
+import { api } from 'services/api'
 import { setCookie } from 'nookies'
+
 type User = {
   email: string
   permissions: string[]
